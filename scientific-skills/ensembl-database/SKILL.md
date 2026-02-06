@@ -10,7 +10,7 @@ metadata:
 
 ## Overview
 
-Access and query the Ensembl genome database, a comprehensive resource for vertebrate genomic data maintained by EMBL-EBI. The database provides gene annotations, sequences, variants, regulatory information, and comparative genomics data for over 250 species. Current release is 115 (September 2025).
+Access and query the Ensembl genome database, a comprehensive resource for vertebrate genomic data maintained by EMBL-EBI. The database provides gene annotations, sequences, variants, regulatory information, and comparative genomics data for over 250 species. Current release is 115 (September 2025). The REST API provides **17 major endpoint categories** with 100+ endpoints covering archive, comparative genomics, cross-references, information, linkage disequilibrium, lookup, mapping, ontologies, overlap, phenotype annotations, regulation, sequence, transcript haplotypes, VEP, variation, and GA4GH-formatted data.
 
 ## When to Use This Skill
 
@@ -58,12 +58,12 @@ gene_info = client.lookup_id(
 
 **Direct REST API (no package):**
 ```python
-import requests
+import httpx
 
 server = "https://rest.ensembl.org"
 
 # Symbol lookup
-response = requests.get(
+response = httpx.get(
     f"{server}/lookup/symbol/homo_sapiens/BRCA2",
     headers={"Content-Type": "application/json"}
 )
@@ -201,7 +201,7 @@ The Ensembl REST API has rate limits. Follow these practices:
 Always implement proper error handling:
 
 ```python
-import requests
+import httpx
 import time
 
 def query_ensembl(endpoint, params=None, max_retries=3):
@@ -209,7 +209,7 @@ def query_ensembl(endpoint, params=None, max_retries=3):
     headers = {"Content-Type": "application/json"}
 
     for attempt in range(max_retries):
-        response = requests.get(
+        response = httpx.get(
             f"{server}{endpoint}",
             headers=headers,
             params=params
@@ -239,10 +239,10 @@ The `ensembl_rest` package provides a Pythonic interface to all Ensembl REST API
 
 ### Direct REST API
 
-No installation needed - use standard HTTP libraries like `requests`:
+No installation needed - use standard HTTP libraries like `httpx`:
 
 ```bash
-uv pip install requests
+uv pip install httpx
 ```
 
 ## Resources

@@ -193,12 +193,12 @@ import pubchempy as pcp
 # Download compound structure as PNG
 pcp.download('PNG', 'caffeine', 'name', 'caffeine.png', overwrite=True)
 
-# Using direct URL (via requests)
-import requests
+# Using direct URL (via httpx)
+import httpx
 
 cid = 2244  # Aspirin
 url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{cid}/PNG?image_size=large"
-response = requests.get(url)
+response = httpx.get(url)
 
 with open('structure.png', 'wb') as f:
     f.write(response.content)
@@ -227,14 +227,14 @@ if synonyms_data:
 Retrieve biological activity data from assays:
 
 ```python
-import requests
+import httpx
 import json
 
 # Get bioassay summary for a compound
 cid = 2244  # Aspirin
 url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{cid}/assaysummary/JSON"
 
-response = requests.get(url)
+response = httpx.get(url)
 if response.status_code == 200:
     data = response.json()
     # Process bioassay information
@@ -254,12 +254,12 @@ if response.status_code == 200:
 Access detailed compound information through PUG-View:
 
 ```python
-import requests
+import httpx
 
 cid = 2244
 url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug_view/data/compound/{cid}/JSON"
 
-response = requests.get(url)
+response = httpx.get(url)
 if response.status_code == 200:
     annotations = response.json()
     # Contains extensive data including:
@@ -289,7 +289,7 @@ uv pip install pubchempy
 For direct API access and bioactivity queries:
 
 ```bash
-uv pip install requests
+uv pip install httpx
 ```
 
 Optional for data analysis:

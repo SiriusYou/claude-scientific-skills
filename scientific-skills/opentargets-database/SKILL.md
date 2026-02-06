@@ -230,6 +230,45 @@ Key information:
 - **No authentication required**
 - **Request only needed fields** to minimize response size
 - **Use pagination** for large result sets: `page: {size: N, index: M}`
+- **Use POST requests** with a JSON body containing `query` and `variables`
+
+### Available Query Types
+
+| Query | Arguments | Description |
+|-------|-----------|-------------|
+| `target` | `ensemblId: String!` | Target annotations, tractability, mouse phenotypes, baseline expression |
+| `disease` | `efoId: String!` | Disease/phenotype info, ontology, drugs, clinical data |
+| `drug` | `chemblId: String!` | Drug compounds, mechanisms of action, indications, pharmacovigilance |
+| `variant` | `variantId: String!` | Variant annotations, allele frequencies, consequences, credible sets |
+| `study` | `studyId: String!` | Study metadata, traits, publications, cohort data |
+| `credibleSet` | `studyLocusId: String!` | Credible set variants and gene assignments |
+| `search` | `queryString: String!` | Entity search across the platform |
+
+### Example: Query Variant Information
+
+```python
+import httpx
+
+query = """
+  query variant($variantId: String!) {
+    variant(variantId: $variantId) {
+      id
+      chromosome
+      position
+      refAllele
+      altAllele
+      mostSevereConsequence
+      gnomadFrequency
+    }
+  }
+"""
+
+response = httpx.post(
+    "https://api.platform.opentargets.org/api/v4/graphql",
+    json={"query": query, "variables": {"variantId": "1_154453788_C_T"}}
+)
+data = response.json()
+```
 
 Refer to `references/api_reference.md` for:
 - Complete endpoint documentation
@@ -353,7 +392,7 @@ Complete target annotation reference:
 
 ## Data Updates and Versioning
 
-The Open Targets Platform is updated **quarterly** with new data releases. The current release (as of October 2025) is available at the API endpoint.
+The Open Targets Platform is updated **quarterly** with new data releases. Check the API for the latest version.
 
 **Release information:** Check https://platform-docs.opentargets.org/release-notes for the latest updates.
 

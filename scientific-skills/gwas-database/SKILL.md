@@ -99,11 +99,11 @@ The GWAS Catalog provides two REST APIs for programmatic access:
 
 1. **Studies endpoint** - `/studies/{accessionID}`
    ```python
-   import requests
+   import httpx
 
    # Get a specific study
    url = "https://www.ebi.ac.uk/gwas/rest/api/studies/GCST001795"
-   response = requests.get(url, headers={"Content-Type": "application/json"})
+   response = httpx.get(url, headers={"Content-Type": "application/json"})
    study = response.json()
    ```
 
@@ -113,7 +113,7 @@ The GWAS Catalog provides two REST APIs for programmatic access:
    variant = "rs7903146"
    url = f"https://www.ebi.ac.uk/gwas/rest/api/singleNucleotidePolymorphisms/{variant}/associations"
    params = {"projection": "associationBySnp"}
-   response = requests.get(url, params=params, headers={"Content-Type": "application/json"})
+   response = httpx.get(url, params=params, headers={"Content-Type": "application/json"})
    associations = response.json()
    ```
 
@@ -121,7 +121,7 @@ The GWAS Catalog provides two REST APIs for programmatic access:
    ```python
    # Get variant details
    url = "https://www.ebi.ac.uk/gwas/rest/api/singleNucleotidePolymorphisms/rs7903146"
-   response = requests.get(url, headers={"Content-Type": "application/json"})
+   response = httpx.get(url, headers={"Content-Type": "application/json"})
    variant_info = response.json()
    ```
 
@@ -129,7 +129,7 @@ The GWAS Catalog provides two REST APIs for programmatic access:
    ```python
    # Get trait information
    url = "https://www.ebi.ac.uk/gwas/rest/api/efoTraits/EFO_0001360"
-   response = requests.get(url, headers={"Content-Type": "application/json"})
+   response = httpx.get(url, headers={"Content-Type": "application/json"})
    trait_info = response.json()
    ```
 
@@ -137,14 +137,14 @@ The GWAS Catalog provides two REST APIs for programmatic access:
 
 **Example 1: Find all associations for a disease**
 ```python
-import requests
+import httpx
 
 trait = "EFO_0001360"  # Type 2 diabetes
 base_url = "https://www.ebi.ac.uk/gwas/rest/api"
 
 # Query associations for this trait
 url = f"{base_url}/efoTraits/{trait}/associations"
-response = requests.get(url, headers={"Content-Type": "application/json"})
+response = httpx.get(url, headers={"Content-Type": "application/json"})
 associations = response.json()
 
 # Process results
@@ -157,20 +157,20 @@ for assoc in associations.get('_embedded', {}).get('associations', []):
 
 **Example 2: Get variant information and all trait associations**
 ```python
-import requests
+import httpx
 
 variant = "rs7903146"
 base_url = "https://www.ebi.ac.uk/gwas/rest/api"
 
 # Get variant details
 url = f"{base_url}/singleNucleotidePolymorphisms/{variant}"
-response = requests.get(url, headers={"Content-Type": "application/json"})
+response = httpx.get(url, headers={"Content-Type": "application/json"})
 variant_data = response.json()
 
 # Get all associations for this variant
 url = f"{base_url}/singleNucleotidePolymorphisms/{variant}/associations"
 params = {"projection": "associationBySnp"}
-response = requests.get(url, params=params, headers={"Content-Type": "application/json"})
+response = httpx.get(url, params=params, headers={"Content-Type": "application/json"})
 associations = response.json()
 
 # Extract trait names and p-values
@@ -182,7 +182,7 @@ for assoc in associations.get('_embedded', {}).get('associations', []):
 
 **Example 3: Access summary statistics**
 ```python
-import requests
+import httpx
 
 # Query summary statistics API
 base_url = "https://www.ebi.ac.uk/gwas/summary-statistics/api"
@@ -195,7 +195,7 @@ params = {
     "p_upper": p_upper,
     "size": 100  # Number of results
 }
-response = requests.get(url, params=params)
+response = httpx.get(url, params=params)
 results = response.json()
 
 # Process genome-wide significant hits
@@ -209,7 +209,7 @@ for hit in results.get('_embedded', {}).get('associations', []):
 
 **Example 4: Query by chromosomal region**
 ```python
-import requests
+import httpx
 
 # Find variants in a specific genomic region
 chromosome = "10"
@@ -223,7 +223,7 @@ params = {
     "bpStart": start_pos,
     "bpEnd": end_pos
 }
-response = requests.get(url, params=params, headers={"Content-Type": "application/json"})
+response = httpx.get(url, params=params, headers={"Content-Type": "application/json"})
 variants_in_region = response.json()
 ```
 
@@ -244,13 +244,13 @@ The GWAS Catalog hosts full summary statistics for many studies, providing acces
 
 **Example: Download summary statistics for a study**
 ```python
-import requests
+import httpx
 import gzip
 
 # Get available summary statistics
 base_url = "https://www.ebi.ac.uk/gwas/summary-statistics/api"
 url = f"{base_url}/studies/GCST001234"
-response = requests.get(url)
+response = httpx.get(url)
 study_info = response.json()
 
 # Download link is provided in the response
@@ -279,15 +279,15 @@ The GWAS Catalog provides links to external resources:
 
 **Following Links in API Responses:**
 ```python
-import requests
+import httpx
 
 # API responses include _links for related resources
-response = requests.get("https://www.ebi.ac.uk/gwas/rest/api/studies/GCST001234")
+response = httpx.get("https://www.ebi.ac.uk/gwas/rest/api/studies/GCST001234")
 study = response.json()
 
 # Follow link to associations
 associations_url = study['_links']['associations']['href']
-associations_response = requests.get(associations_url)
+associations_response = httpx.get(associations_url)
 ```
 
 ## Query Workflows
@@ -481,7 +481,7 @@ Results are paginated (default 20 items per page). Navigate using:
 Complete workflow for querying and analyzing GWAS data:
 
 ```python
-import requests
+import httpx
 import pandas as pd
 from time import sleep
 
@@ -505,7 +505,7 @@ def query_gwas_catalog(trait_id, p_threshold=5e-8):
 
     while True:
         params = {"page": page, "size": 100}
-        response = requests.get(url, params=params, headers=headers)
+        response = httpx.get(url, params=params, headers=headers)
 
         if response.status_code != 200:
             break

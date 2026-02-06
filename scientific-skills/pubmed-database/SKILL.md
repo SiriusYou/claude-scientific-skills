@@ -122,7 +122,7 @@ Access PubMed data programmatically using the NCBI E-utilities REST API for auto
 
 **Basic Workflow**:
 ```python
-import requests
+import httpx
 
 # Step 1: Search for articles
 base_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
@@ -134,7 +134,7 @@ params = {
     "retmode": "json",
     "api_key": "YOUR_API_KEY"  # Optional but recommended
 }
-response = requests.get(search_url, params=params)
+response = httpx.get(search_url, params=params)
 pmids = response.json()["esearchresult"]["idlist"]
 
 # Step 2: Fetch article details
@@ -146,7 +146,7 @@ params = {
     "retmode": "text",
     "api_key": "YOUR_API_KEY"
 }
-response = requests.get(fetch_url, params=params)
+response = httpx.get(fetch_url, params=params)
 abstracts = response.text
 ```
 

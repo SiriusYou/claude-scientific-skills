@@ -268,31 +268,33 @@ Refer to ZINC documentation at https://wiki.docking.org for downloading protocol
 
 ## Python Integration
 
-### Using curl with Python
+### Using httpx with Python
 
 ```python
-import subprocess
-import json
+import httpx
 
-def query_zinc_by_id(zinc_id, output_fields="zinc_id,smiles,catalogs"):
+def query_zinc_by_id(zinc_id: str, output_fields: str = "zinc_id,smiles,catalogs") -> str:
     """Query ZINC22 by ZINC ID."""
     url = f"https://cartblanche22.docking.org/[email protected]_id={zinc_id}&output_fields={output_fields}"
-    result = subprocess.run(['curl', url], capture_output=True, text=True)
-    return result.stdout
+    response = httpx.get(url)
+    response.raise_for_status()
+    return response.text
 
-def search_by_smiles(smiles, dist=0, adist=0, output_fields="zinc_id,smiles"):
+def search_by_smiles(smiles: str, dist: int = 0, adist: int = 0, output_fields: str = "zinc_id,smiles") -> str:
     """Search ZINC22 by SMILES with optional distance parameters."""
     url = f"https://cartblanche22.docking.org/smiles.txt:smiles={smiles}&dist={dist}&adist={adist}&output_fields={output_fields}"
-    result = subprocess.run(['curl', url], capture_output=True, text=True)
-    return result.stdout
+    response = httpx.get(url)
+    response.raise_for_status()
+    return response.text
 
-def get_random_compounds(count=100, subset=None, output_fields="zinc_id,smiles,tranche"):
+def get_random_compounds(count: int = 100, subset: str | None = None, output_fields: str = "zinc_id,smiles,tranche") -> str:
     """Get random compounds from ZINC22."""
     url = f"https://cartblanche22.docking.org/substance/random.txt:count={count}&output_fields={output_fields}"
     if subset:
         url += f"&subset={subset}"
-    result = subprocess.run(['curl', url], capture_output=True, text=True)
-    return result.stdout
+    response = httpx.get(url)
+    response.raise_for_status()
+    return response.text
 ```
 
 ### Parsing Results

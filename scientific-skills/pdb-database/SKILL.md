@@ -149,19 +149,19 @@ Retrieve coordinate files in various formats:
 
 **Example Download:**
 ```python
-import requests
+import httpx
 
 pdb_id = "4HHB"
 
 # Download PDB format
 pdb_url = f"https://files.rcsb.org/download/{pdb_id}.pdb"
-response = requests.get(pdb_url)
+response = httpx.get(pdb_url)
 with open(f"{pdb_id}.pdb", "w") as f:
     f.write(response.text)
 
 # Download mmCIF format
 cif_url = f"https://files.rcsb.org/download/{pdb_id}.cif"
-response = requests.get(cif_url)
+response = httpx.get(cif_url)
 with open(f"{pdb_id}.cif", "w") as f:
     f.write(response.text)
 ```

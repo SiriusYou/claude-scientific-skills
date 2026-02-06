@@ -29,7 +29,7 @@ client = OpenAlexClient(email="your-email@example.edu")
 Install required package using uv:
 
 ```bash
-uv pip install requests
+uv pip install httpx
 ```
 
 No API key required - OpenAlex is completely open.
@@ -217,8 +217,8 @@ works = client.sample_works(
 work = client.get_entity('works', 'https://doi.org/10.1038/s41586-021-03819-2')
 
 # Get citing papers using cited_by_api_url
-import requests
-citing_response = requests.get(
+import httpx
+citing_response = httpx.get(
     work['cited_by_api_url'],
     params={'mailto': client.email, 'per-page': 200}
 )

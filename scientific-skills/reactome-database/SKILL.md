@@ -70,28 +70,28 @@ The Content Service uses REST protocol and returns data in JSON or plain text fo
 
 **Get database version:**
 ```python
-import requests
+import httpx
 
-response = requests.get("https://reactome.org/ContentService/data/database/version")
+response = httpx.get("https://reactome.org/ContentService/data/database/version")
 version = response.text
 print(f"Reactome version: {version}")
 ```
 
 **Query a specific entity:**
 ```python
-import requests
+import httpx
 
 entity_id = "R-HSA-69278"  # Example pathway ID
-response = requests.get(f"https://reactome.org/ContentService/data/query/{entity_id}")
+response = httpx.get(f"https://reactome.org/ContentService/data/query/{entity_id}")
 data = response.json()
 ```
 
 **Get participating molecules in a pathway:**
 ```python
-import requests
+import httpx
 
 event_id = "R-HSA-69278"
-response = requests.get(
+response = httpx.get(
     f"https://reactome.org/ContentService/data/event/{event_id}/participatingPhysicalEntities"
 )
 molecules = response.json()
@@ -120,14 +120,14 @@ Submit a list of gene/protein identifiers to find enriched pathways.
 
 **Using REST API:**
 ```python
-import requests
+import httpx
 
 # Prepare identifier list
 identifiers = ["TP53", "BRCA1", "EGFR", "MYC"]
 data = "\n".join(identifiers)
 
 # Submit analysis
-response = requests.post(
+response = httpx.post(
     "https://reactome.org/AnalysisService/identifiers/",
     headers={"Content-Type": "text/plain"},
     data=data
@@ -144,7 +144,7 @@ for pathway in result["pathways"]:
 **Retrieve analysis by token:**
 ```python
 # Token is valid for 7 days
-response = requests.get(f"https://reactome.org/AnalysisService/token/{token}")
+response = httpx.get(f"https://reactome.org/AnalysisService/token/{token}")
 results = response.json()
 ```
 
@@ -162,13 +162,13 @@ EGFR	4.5	4.2	4.8
 
 **Submit expression data:**
 ```python
-import requests
+import httpx
 
 # Read TSV file
 with open("expression_data.tsv", "r") as f:
     data = f.read()
 
-response = requests.post(
+response = httpx.post(
     "https://reactome.org/AnalysisService/identifiers/",
     headers={"Content-Type": "text/plain"},
     data=data
@@ -182,7 +182,7 @@ result = response.json()
 Map identifiers to human pathways exclusively using the `/projection/` endpoint:
 
 ```python
-response = requests.post(
+response = httpx.post(
     "https://reactome.org/AnalysisService/identifiers/projection/",
     headers={"Content-Type": "text/plain"},
     data=data

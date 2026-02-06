@@ -162,6 +162,30 @@ protein_name:kinase*
 
 See `/references/query_syntax.md` for comprehensive syntax documentation.
 
+## Error Handling
+
+Implement proper error handling for API calls:
+
+```python
+import httpx
+import time
+
+async def query_uniprot(url: str, params: dict | None = None, max_retries: int = 3) -> httpx.Response:
+    async with httpx.AsyncClient() as client:
+        for attempt in range(max_retries):
+            response = await client.get(url, params=params)
+            if response.status_code == 200:
+                return response
+            elif response.status_code == 429:
+                retry_after = int(response.headers.get("Retry-After", 5))
+                time.sleep(retry_after)
+            elif response.status_code == 400:
+                raise ValueError(f"Invalid query: {response.text}")
+            else:
+                response.raise_for_status()
+    raise RuntimeError(f"Failed after {max_retries} attempts")
+```
+
 ## Best Practices
 
 1. **Use reviewed entries when possible**: Filter with `reviewed:true` for Swiss-Prot (manually curated) entries
@@ -169,8 +193,9 @@ See `/references/query_syntax.md` for comprehensive syntax documentation.
 3. **Use field selection**: Only request fields you need to reduce bandwidth and processing time
 4. **Handle pagination**: For large result sets, implement proper pagination or use the stream endpoint
 5. **Cache results**: Store frequently accessed data locally to minimize API calls
-6. **Rate limiting**: Be respectful of API resources; implement delays for large batch operations
+6. **Rate limiting**: UniProt allows a reasonable number of requests but will return HTTP 429 if exceeded; implement exponential backoff
 7. **Check data quality**: TrEMBL entries are computational predictions; Swiss-Prot entries are manually reviewed
+8. **Prefer async clients**: Use `httpx.AsyncClient` for better performance in batch operations
 
 ## Resources
 
